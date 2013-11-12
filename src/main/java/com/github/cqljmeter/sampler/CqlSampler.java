@@ -1,7 +1,5 @@
 package com.github.cqljmeter.sampler;
 
-import java.util.concurrent.TimeUnit;
-
 import org.apache.jmeter.samplers.AbstractSampler;
 import org.apache.jmeter.samplers.Entry;
 import org.apache.jmeter.samplers.SampleResult;
@@ -9,40 +7,59 @@ import org.apache.jmeter.testbeans.TestBean;
 import org.apache.jorphan.logging.LoggingManager;
 import org.apache.log.Logger;
 
+import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.Session;
+import com.datastax.driver.core.exceptions.DriverException;
+
 public class CqlSampler extends AbstractSampler implements TestBean {
 
 	private static final Logger log = LoggingManager.getLoggerForClass();
 	private static final long serialVersionUID = -996507992186021290L;
-	
+
 	private String query = "";
-	private String queryTimeout = "";
+	private String keySpace = "";
+	private String contactPoint = "";
 
-	public CqlSampler(){}
-	
 	public SampleResult sample(Entry arg0) {
-		log.warn("sampling cql: " + query);
+		log.debug("sampling cql: " + query);
 		SampleResult result = new SampleResult();
-        result.setSampleLabel("test label");
-        result.setSamplerData("test data");
-        result.setDataType(SampleResult.TEXT);
-        result.setContentType("text/plain");
-        
-        // Assume we will be successful
-        result.setSuccessful(true);
-        result.setResponseMessageOK();
-        result.setResponseCodeOK();
+		result.setDataType(SampleResult.TEXT);
+		result.setContentType("text/plain");
+		result.setSampleLabel(contactPoint + ":" + keySpace);
+		result.setSamplerData(query);
 
+		// Assume we will be successful
+		result.setSuccessful(true);
+		result.setResponseMessageOK();
+		result.setResponseCodeOK();
 
-        result.sampleStart();
-        
-        try {
-			TimeUnit.SECONDS.sleep(2);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		result.sampleStart();
+
+		Cluster cluster = Cluster.builder().addContactPoint(getContactPoint()).build();
+		Session session = null;
+		try {
+			try {
+				session = cluster.connect(keySpace);
+			} finally {
+				result.latencyEnd();
+			}
+			result.setResponseMessage(session.execute(query).toString());
+		} catch (DriverException ex) {
+			result.setResponseCode("000");
+			result.setResponseMessage(ex.toString());
+			result.setResponseData(ex.getMessage().getBytes());
+			result.setSuccessful(false);
+		} catch (Exception ex) {
+			result.setResponseMessage(ex.toString());
+			result.setResponseCode("000");
+			result.setResponseData(ex.getMessage().getBytes());
+			result.setSuccessful(false);
+		} finally {
+			cluster.shutdown();
 		}
-        result.sampleEnd();
-        return result;
+
+		result.sampleEnd();
+		return result;
 	}
 
 	public String getQuery() {
@@ -53,12 +70,19 @@ public class CqlSampler extends AbstractSampler implements TestBean {
 		this.query = query;
 	}
 
-	public String getQueryTimeout() {
-		return queryTimeout;
+	public String getKeySpace() {
+		return keySpace;
 	}
 
-	public void setQueryTimeout(String queryTimeout) {
-		this.queryTimeout = queryTimeout;
+	public void setKeySpace(String keySpace) {
+		this.keySpace = keySpace;
 	}
 
+	public String getContactPoint() {
+		return contactPoint;
+	}
+
+	public void setContactPoint(String contactPoint) {
+		this.contactPoint = contactPoint;
+	}
 }
