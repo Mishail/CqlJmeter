@@ -1,5 +1,6 @@
 package com.github.cqljmeter.sampler;
 
+import org.apache.commons.lang3.Validate;
 import org.apache.jmeter.samplers.AbstractSampler;
 import org.apache.jmeter.samplers.Entry;
 import org.apache.jmeter.samplers.SampleResult;
@@ -9,9 +10,7 @@ import org.apache.log.Logger;
 
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Session;
-import com.datastax.driver.core.exceptions.DriverException;
 import com.github.cqljmeter.config.ClusterHolder;
-import com.google.common.base.Preconditions;
 
 public class CqlSampler extends AbstractSampler implements TestBean {
 
@@ -36,31 +35,22 @@ public class CqlSampler extends AbstractSampler implements TestBean {
 		result.setResponseCodeOK();
 
 		result.sampleStart();
-
-		Session session = getSession(keySpace);
 		try {
-			ResultSet data = session.execute(query);
+			ResultSet data = getSession(keySpace).execute(query);
 			result.setResponseData(data.toString().getBytes());
 			result.setResponseMessage(data.toString());
-		} catch (DriverException ex) {
-			result.setResponseCode("000");
-			result.setResponseMessage(ex.toString());
-			result.setResponseData(ex.getMessage().getBytes());
-			result.setSuccessful(false);
 		} catch (Exception ex) {
 			result.setResponseMessage(ex.toString());
-			result.setResponseCode("000");
 			result.setResponseData(ex.getMessage().getBytes());
 			result.setSuccessful(false);
 		} 
-
 		result.sampleEnd();
 		return result;
 	}
 
 	private Session getSession(String input) {
 		ClusterHolder holder = (ClusterHolder) getThreadContext().getVariables().getObject(getClusterId());
-		Preconditions.checkNotNull(holder, "Can't obtain a session. Did you forget to add Cassandra Configuration Element?");
+		Validate.notNull(holder, "Can't obtain a session. Did you forget to add C* Cluster Configuration Element?");
 		return holder.getSesssion(input);
 	}
 
