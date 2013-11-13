@@ -11,6 +11,7 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.exceptions.DriverException;
 import com.github.cqljmeter.config.ClusterHolder;
+import com.google.common.base.Preconditions;
 
 public class CqlSampler extends AbstractSampler implements TestBean {
 
@@ -36,9 +37,8 @@ public class CqlSampler extends AbstractSampler implements TestBean {
 
 		result.sampleStart();
 
-		Session session = null;
+		Session session = getSession(keySpace);
 		try {
-			session = getSession(keySpace);
 			ResultSet data = session.execute(query);
 			result.setResponseData(data.toString().getBytes());
 			result.setResponseMessage(data.toString());
@@ -59,7 +59,9 @@ public class CqlSampler extends AbstractSampler implements TestBean {
 	}
 
 	private Session getSession(String input) {
-		return ((ClusterHolder)getThreadContext().getVariables().getObject(getClusterId())).getSesssion(input);
+		ClusterHolder holder = (ClusterHolder) getThreadContext().getVariables().getObject(getClusterId());
+		Preconditions.checkNotNull(holder, "Can't obtain a session. Did you forget to add Cassandra Configuration Element?");
+		return holder.getSesssion(input);
 	}
 
 	public String getQuery() {
