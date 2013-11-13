@@ -9,7 +9,7 @@ public class CqlSamplerBeanInfo extends BeanInfoSupport {
 
 	public CqlSamplerBeanInfo() {
 		super(CqlSampler.class);
-		createPropertyGroup("cql", new String[] { "contactPoint", "keySpace", "query" });
+		createPropertyGroup("cql", new String[] { "clusterId", "keySpace", "query" });
 
 		PropertyDescriptor p = property("query", TypeEditor.TextAreaEditor);
 		p.setValue(NOT_UNDEFINED, Boolean.TRUE);
@@ -20,8 +20,8 @@ public class CqlSamplerBeanInfo extends BeanInfoSupport {
 		p.setValue(NOT_UNDEFINED, Boolean.TRUE);
 		p.setValue(DEFAULT, "stress");
 		
-		p = property("contactPoint");
+		p = property("clusterId");
 		p.setValue(NOT_UNDEFINED, Boolean.TRUE);
-		p.setValue(DEFAULT, "127.0.0.1");
+		p.setValue(DEFAULT, "Cluster1");
 	}
 }

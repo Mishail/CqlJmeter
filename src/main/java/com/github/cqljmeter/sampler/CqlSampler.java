@@ -7,9 +7,10 @@ import org.apache.jmeter.testbeans.TestBean;
 import org.apache.jorphan.logging.LoggingManager;
 import org.apache.log.Logger;
 
-import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.exceptions.DriverException;
+import com.github.cqljmeter.config.ClusterHolder;
 
 public class CqlSampler extends AbstractSampler implements TestBean {
 
@@ -18,14 +19,14 @@ public class CqlSampler extends AbstractSampler implements TestBean {
 
 	private String query = "";
 	private String keySpace = "";
-	private String contactPoint = "";
+	private String clusterId = "";
 
 	public SampleResult sample(Entry arg0) {
 		log.debug("sampling cql: " + query);
 		SampleResult result = new SampleResult();
 		result.setDataType(SampleResult.TEXT);
 		result.setContentType("text/plain");
-		result.setSampleLabel(contactPoint + ":" + keySpace);
+		result.setSampleLabel(getName());
 		result.setSamplerData(query);
 
 		// Assume we will be successful
@@ -35,15 +36,12 @@ public class CqlSampler extends AbstractSampler implements TestBean {
 
 		result.sampleStart();
 
-		Cluster cluster = Cluster.builder().addContactPoint(getContactPoint()).build();
 		Session session = null;
 		try {
-			try {
-				session = cluster.connect(keySpace);
-			} finally {
-				result.latencyEnd();
-			}
-			result.setResponseMessage(session.execute(query).toString());
+			session = getSession(keySpace);
+			ResultSet data = session.execute(query);
+			result.setResponseData(data.toString().getBytes());
+			result.setResponseMessage(data.toString());
 		} catch (DriverException ex) {
 			result.setResponseCode("000");
 			result.setResponseMessage(ex.toString());
@@ -54,12 +52,14 @@ public class CqlSampler extends AbstractSampler implements TestBean {
 			result.setResponseCode("000");
 			result.setResponseData(ex.getMessage().getBytes());
 			result.setSuccessful(false);
-		} finally {
-			cluster.shutdown();
-		}
+		} 
 
 		result.sampleEnd();
 		return result;
+	}
+
+	private Session getSession(String input) {
+		return ((ClusterHolder)getThreadContext().getVariables().getObject(getClusterId())).getSesssion(input);
 	}
 
 	public String getQuery() {
@@ -78,11 +78,11 @@ public class CqlSampler extends AbstractSampler implements TestBean {
 		this.keySpace = keySpace;
 	}
 
-	public String getContactPoint() {
-		return contactPoint;
+	public String getClusterId() {
+		return clusterId;
 	}
 
-	public void setContactPoint(String contactPoint) {
-		this.contactPoint = contactPoint;
+	public void setClusterId(String clusterId) {
+		this.clusterId = clusterId;
 	}
 }
