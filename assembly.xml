@@ -28,5 +28,11 @@
 			<directory>${project.build.directory}/lib</directory>
 			<outputDirectory>lib</outputDirectory>
 		</fileSet>
+		<fileSet>
+			<directory>${project.basedir}/src/main/resources/samples</directory>
+			<lineEnding>unix</lineEnding>
+			<fileMode>644</fileMode>
+			<outputDirectory>/samples</outputDirectory>
+		</fileSet>
 	</fileSets>
 </assembly>
