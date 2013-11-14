@@ -9,7 +9,7 @@ Install
 --------
 
 * Get a release
-* Unpack into Jmeter folder
+* Unpack into _/lib_ folder into the JMeter's folder
 
 
 Quickstart
@@ -24,3 +24,8 @@ Basically you need 4 items:
 4. Listener to gather results
 
 
+More information
+------
+* http://jmeter.apache.org/usermanual/index.html
+* http://jmeter.apache.org/usermanual/component_reference.html - buildig blocks
+* http://jmeter.apache.org/usermanual/functions.html - you can use functions and variables in CQL Samplers
