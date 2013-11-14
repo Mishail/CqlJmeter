@@ -20,12 +20,12 @@ Quickstart
 ---------
 There is a sample test plan in _/samples_ folder
 
-Basically you need 4 items:
+Basically you need 4 components:
 
-1. Thread group to simulate users
-2. C* Cluster config element to define connection properties
-3. One (or several) CQL statements to send
-4. Listener to gather results
+1. _Thread group_ to simulate users
+2. _C* Cluster_ config element to define connection properties
+3. One (or several) _CQL statements_ (single or batch) to send
+4. One of the _listeners_ to gather results
 
 
 More information
