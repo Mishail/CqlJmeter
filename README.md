@@ -11,6 +11,10 @@ Install
 * Get a release
 * Unpack into _/lib_ folder into the JMeter's folder
 
+Components
+----------
+See [Components](https://github.com/Mishail/CqlJmeter/wiki)
+
 
 Quickstart
 ---------
