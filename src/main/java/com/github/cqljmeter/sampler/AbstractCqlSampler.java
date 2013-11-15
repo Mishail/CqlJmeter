@@ -5,6 +5,8 @@ import org.apache.jmeter.samplers.AbstractSampler;
 import org.apache.jmeter.samplers.Entry;
 import org.apache.jmeter.samplers.SampleResult;
 import org.apache.jmeter.testbeans.TestBean;
+import org.apache.jorphan.logging.LoggingManager;
+import org.apache.log.Logger;
 
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Session;
@@ -12,8 +14,8 @@ import com.datastax.driver.core.Statement;
 import com.github.cqljmeter.config.ClusterHolder;
 
 public abstract class AbstractCqlSampler extends AbstractSampler implements TestBean {
-
 	private static final long serialVersionUID = -996507992186021290L;
+	private static final Logger log = LoggingManager.getLoggerForClass();
 
 	private String query = "";
 	private String keySpace = "";
@@ -37,6 +39,7 @@ public abstract class AbstractCqlSampler extends AbstractSampler implements Test
 			result.setResponseData(data.toString().getBytes());
 			result.setResponseMessage(data.toString());
 		} catch (Exception ex) {
+			log.error(String.format("Error executing CQL statement [%s]: %s", getQuery(), ex));
 			result.setResponseMessage(ex.toString());
 			result.setResponseData(ex.getMessage().getBytes());
 			result.setSuccessful(false);
