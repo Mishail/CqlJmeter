@@ -1,5 +1,6 @@
 package com.github.cqljmeter.sampler;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.jmeter.samplers.AbstractSampler;
 import org.apache.jmeter.samplers.Entry;
@@ -8,6 +9,7 @@ import org.apache.jmeter.testbeans.TestBean;
 import org.apache.jorphan.logging.LoggingManager;
 import org.apache.log.Logger;
 
+import com.datastax.driver.core.ConsistencyLevel;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
@@ -20,6 +22,7 @@ public abstract class AbstractCqlSampler extends AbstractSampler implements Test
 	private String query = "";
 	private String keySpace = "";
 	private String clusterId = "";
+	private String consistency = null;
 
 	public SampleResult sample(Entry arg0) {
 		SampleResult result = new SampleResult();
@@ -33,9 +36,10 @@ public abstract class AbstractCqlSampler extends AbstractSampler implements Test
 		result.setResponseMessageOK();
 		result.setResponseCodeOK();
 
+		Statement statement = configure(getStatement());
 		result.sampleStart();
 		try {
-			ResultSet data = getSession(keySpace).execute(getStatement());
+			ResultSet data = getSession(keySpace).execute(statement);
 			result.setResponseData(data.toString().getBytes());
 			result.setResponseMessage(data.toString());
 		} catch (Exception ex) {
@@ -46,6 +50,13 @@ public abstract class AbstractCqlSampler extends AbstractSampler implements Test
 		} 
 		result.sampleEnd();
 		return result;
+	}
+
+	private Statement configure(Statement statement) {
+		if (StringUtils.isNotBlank(consistency)) {
+			statement.setConsistencyLevel(ConsistencyLevel.valueOf(consistency));
+		}
+		return statement;
 	}
 
 	protected abstract Statement getStatement();
@@ -78,5 +89,13 @@ public abstract class AbstractCqlSampler extends AbstractSampler implements Test
 
 	public void setClusterId(String clusterId) {
 		this.clusterId = clusterId;
+	}
+
+	public String getConsistency() {
+		return consistency;
+	}
+
+	public void setConsistency(String consistency) {
+		this.consistency = consistency;
 	}
 }

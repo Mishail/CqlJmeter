@@ -9,6 +9,8 @@ import org.apache.log.Logger;
 
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Cluster.Builder;
+import com.datastax.driver.core.ConsistencyLevel;
+import com.datastax.driver.core.QueryOptions;
 
 public class CassandraClusterConfig extends ConfigTestElement  implements TestStateListener, TestBean {
 
@@ -19,6 +21,7 @@ public class CassandraClusterConfig extends ConfigTestElement  implements TestSt
 	private String contactPoint = "";
 	private String user = "";
 	private String password = "";
+	private String consistency = QueryOptions.DEFAULT_CONSISTENCY_LEVEL.toString();
 
 	@Override
 	public void testEnded() {
@@ -37,6 +40,7 @@ public class CassandraClusterConfig extends ConfigTestElement  implements TestSt
 		if (StringUtils.isNotBlank(user)) {
 			builder = builder.withCredentials(user, password);
 		}
+		builder = builder.withQueryOptions(new QueryOptions().setConsistencyLevel(ConsistencyLevel.valueOf(consistency)));
 		getThreadContext().getVariables().putObject(getClusterId(), new ClusterHolder(builder.build()));
 	}
 
@@ -75,5 +79,13 @@ public class CassandraClusterConfig extends ConfigTestElement  implements TestSt
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getConsistency() {
+		return consistency;
+	}
+
+	public void setConsistency(String consistency) {
+		this.consistency = consistency;
 	}
 }
