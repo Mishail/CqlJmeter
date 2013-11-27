@@ -18,7 +18,7 @@ See [Components](https://github.com/Mishail/CqlJmeter/wiki)
 
 Quickstart
 ---------
-There is a sample test plan in _/samples_ folder
+There is a sample test plan in _/samples_ folder. Read more at [Walk through the sample](https://github.com/Mishail/CqlJmeter/wiki/Walkthrough)
 
 Basically you need 4 components:
 
