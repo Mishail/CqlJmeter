@@ -43,7 +43,7 @@ public abstract class AbstractCqlSampler extends AbstractSampler implements Test
 			result.setResponseData(data.toString().getBytes());
 			result.setResponseMessage(data.toString());
 		} catch (Exception ex) {
-			log.error(String.format("Error executing CQL statement [%s]: %s", getQuery(), ex));
+			log.error(String.format("Error executing CQL statement [%s]", getQuery()), ex);
 			result.setResponseMessage(ex.toString());
 			result.setResponseData(ex.getMessage().getBytes());
 			result.setSuccessful(false);
