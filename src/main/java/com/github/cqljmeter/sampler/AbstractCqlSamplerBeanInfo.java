@@ -29,7 +29,8 @@ public abstract class AbstractCqlSamplerBeanInfo extends BeanInfoSupport {
 		p.setValue(DEFAULT, "Cluster1");
 		
 		p = property("consistency");
-		p.setValue(NOT_OTHER, Boolean.TRUE);
+		p.setValue(NOT_UNDEFINED, Boolean.TRUE);
+		p.setValue(DEFAULT, ConsistencyLevel.ONE.toString());
 		p.setValue(TAGS, CassandraClusterConfigBeanInfo.toStrings(ConsistencyLevel.values()));
 	}
 }

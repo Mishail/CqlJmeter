@@ -1,13 +1,10 @@
 package com.github.cqljmeter.config;
 
-import java.util.concurrent.ExecutionException;
-
 import org.apache.jorphan.logging.LoggingManager;
 import org.apache.log.Logger;
 
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
-import com.google.common.base.Throwables;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -29,14 +26,7 @@ public class ClusterHolder {
 	}
 	
 	public void shutdown() {
-		try {
-			this.cluster.shutdown().force().get();
-		} catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			Throwables.propagate(e);
-		} catch (ExecutionException e) {
-			Throwables.propagate(e);
-		}
+		this.cluster.shutdown();
 	}
 
 	public Session getSesssion(String keyspace) {
