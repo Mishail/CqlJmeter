@@ -8,13 +8,36 @@
 			<groupId>com.datastax.cassandra</groupId>
 			<artifactId>cassandra-driver-core</artifactId>
 			<version>1.0.5</version>
-			<exclusions>
-				<exclusion>
-					<!-- Provided by JMeter -->
+			<!--<exclusions>
+				 <exclusion>
+					Provided by JMeter
 					<groupId>org.slf4j</groupId>
 					<artifactId>slf4j-api</artifactId>
+					
 				</exclusion>
-			</exclusions>
+				<exclusion>
+					<groupId>commons-codec</groupId>
+					<artifactId>commons-codec</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.httpcomponents</groupId>
+					<artifactId>httpclient</artifactId>
+				</exclusion>
+				<exclusion>
+				  <groupId>antlr</groupId>
+  <artifactId>antlr</artifactId>
+  <packaging>jar</packaging>
+  <version>2.7.7</version>
+				</exclusion>
+				<exclusion>
+				  <groupId>org.slf4j</groupId>
+  <artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
+			</exclusions> -->
 		</dependency>
 		<dependency>
 			<groupId>org.apache.jmeter</groupId>

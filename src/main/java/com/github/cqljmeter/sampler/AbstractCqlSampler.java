@@ -22,7 +22,7 @@ public abstract class AbstractCqlSampler extends AbstractSampler implements Test
 	private String query = "";
 	private String keySpace = "";
 	private String clusterId = "";
-	private String consistency = null;
+	private String consistency = "";
 
 	public SampleResult sample(Entry arg0) {
 		SampleResult result = new SampleResult();
