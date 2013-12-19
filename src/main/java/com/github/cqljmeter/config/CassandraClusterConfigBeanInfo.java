@@ -41,7 +41,7 @@ public class CassandraClusterConfigBeanInfo extends BeanInfoSupport {
 
 	public static String[] toStrings(ConsistencyLevel[] input) {
 		String[] result = new String[input.length];
-		for (int i=0; i < input.length-1; i++) {
+		for (int i=0; i < input.length; i++) {
 			result[i] = input[i].toString();
 		}
 		return result;
