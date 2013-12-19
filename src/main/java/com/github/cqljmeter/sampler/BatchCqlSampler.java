@@ -22,7 +22,7 @@ public class BatchCqlSampler extends AbstractCqlSampler {
 		for (String statement: statements) {
 			result.add(new SimpleStatement(statement));
 		}
-		return QueryBuilder.batch((Statement[]) result.toArray());
+		return QueryBuilder.batch(result.toArray(new Statement[0]));
 	}
 
 }
