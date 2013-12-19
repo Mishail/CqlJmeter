@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jmeterTestPlan version="1.2" properties="2.5" jmeter="2.10 r1533061">
   <hashTree>
-    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan For Reads" enabled="true">
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Sample test plan to read some data" enabled="true">
       <stringProp name="TestPlan.comments"></stringProp>
       <boolProp name="TestPlan.functional_mode">false</boolProp>
       <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
@@ -11,16 +11,63 @@
       <stringProp name="TestPlan.user_define_classpath"></stringProp>
     </TestPlan>
     <hashTree>
-      <com.github.cqljmeter.config.CassandraClusterConfig guiclass="TestBeanGUI" testclass="com.github.cqljmeter.config.CassandraClusterConfig" testname="C* Cluster Settings" enabled="true">
+      <com.github.cqljmeter.config.CassandraClusterConfig guiclass="TestBeanGUI" testclass="com.github.cqljmeter.config.CassandraClusterConfig" testname="1. Put your C* Cluster Settings here." enabled="true">
         <stringProp name="clusterId">Cluster1</stringProp>
         <stringProp name="contactPoint">127.0.0.1</stringProp>
         <stringProp name="user"></stringProp>
         <stringProp name="password"></stringProp>
         <stringProp name="TestPlan.comments">This element defines how your samplers (CQL Statementes) connect to Cassandra</stringProp>
-        <stringProp name="consistency">ONE</stringProp>
       </com.github.cqljmeter.config.CassandraClusterConfig>
       <hashTree/>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Users" enabled="true">
+      <SetupThreadGroup guiclass="SetupThreadGroupGui" testclass="SetupThreadGroup" testname="2. Let&apos;s setup your environment." enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <longProp name="ThreadGroup.start_time">1387476726000</longProp>
+        <longProp name="ThreadGroup.end_time">1387476726000</longProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </SetupThreadGroup>
+      <hashTree>
+        <com.github.cqljmeter.sampler.CqlSampler guiclass="TestBeanGUI" testclass="com.github.cqljmeter.sampler.CqlSampler" testname="2.1. We&apos;ll create a test keyspace first." enabled="true">
+          <stringProp name="TestPlan.comments">It can fail if the keyspace already exists. That&apos;s OK for us.</stringProp>
+          <stringProp name="clusterId">Cluster1</stringProp>
+          <stringProp name="keySpace">system</stringProp>
+          <stringProp name="consistency">ONE</stringProp>
+          <stringProp name="query">CREATE KEYSPACE stress WITH replication = {
+  &apos;class&apos;: &apos;SimpleStrategy&apos;,
+  &apos;replication_factor&apos;: &apos;1&apos;
+};</stringProp>
+        </com.github.cqljmeter.sampler.CqlSampler>
+        <hashTree/>
+        <com.github.cqljmeter.sampler.CqlSampler guiclass="TestBeanGUI" testclass="com.github.cqljmeter.sampler.CqlSampler" testname="2.2 Then create a test table." enabled="true">
+          <stringProp name="TestPlan.comments">It can fail if the table already exists. That&apos;s OK for us.</stringProp>
+          <stringProp name="clusterId">Cluster1</stringProp>
+          <stringProp name="keySpace">stress</stringProp>
+          <stringProp name="consistency">ONE</stringProp>
+          <stringProp name="query">CREATE TABLE t1 (
+  id timeuuid,
+  num int,
+  str text,
+  PRIMARY KEY (id)
+);</stringProp>
+        </com.github.cqljmeter.sampler.CqlSampler>
+        <hashTree/>
+        <com.github.cqljmeter.sampler.CqlSampler guiclass="TestBeanGUI" testclass="com.github.cqljmeter.sampler.CqlSampler" testname="2.3 And finally create an index." enabled="true">
+          <stringProp name="TestPlan.comments">It can fail if the index already exists. That&apos;s OK for us.</stringProp>
+          <stringProp name="clusterId">Cluster1</stringProp>
+          <stringProp name="keySpace">stress</stringProp>
+          <stringProp name="consistency">ONE</stringProp>
+          <stringProp name="query">CREATE INDEX t1_num_idx ON t1 (num);</stringProp>
+        </com.github.cqljmeter.sampler.CqlSampler>
+        <hashTree/>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="3.1.  After that ten users" enabled="true">
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
@@ -36,54 +83,56 @@
         <stringProp name="TestPlan.comments">A Thread Group defines a pool of users that will execute your request(s)</stringProp>
       </ThreadGroup>
       <hashTree>
-        <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Repeat in a Loop" enabled="true">
+        <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="3.2. Will each execute 10 times" enabled="true">
           <boolProp name="LoopController.continue_forever">true</boolProp>
           <stringProp name="LoopController.loops">10</stringProp>
         </LoopController>
         <hashTree>
-          <com.github.cqljmeter.sampler.CqlSampler guiclass="TestBeanGUI" testclass="com.github.cqljmeter.sampler.CqlSampler" testname="Select Random Data" enabled="true">
+          <com.github.cqljmeter.sampler.CqlSampler guiclass="TestBeanGUI" testclass="com.github.cqljmeter.sampler.CqlSampler" testname="3.3. A &quot;select&quot; statement for a random value" enabled="true">
             <stringProp name="query">select * from t1 where num = ${__Random(0,1000000,)}</stringProp>
             <stringProp name="queryTimeout"></stringProp>
             <stringProp name="contactPoint">127.0.0.1</stringProp>
             <stringProp name="keySpace">stress</stringProp>
             <stringProp name="clusterId">Cluster1</stringProp>
-            <stringProp name="TestPlan.comments">It&apos;s your CQL statement</stringProp>
+            <stringProp name="TestPlan.comments">It&apos;s your CQL statement. You can use any JMeter function here. In this example we use ${__Random(0,1000000,)} to get a random number</stringProp>
+            <stringProp name="consistency">ONE</stringProp>
           </com.github.cqljmeter.sampler.CqlSampler>
           <hashTree/>
         </hashTree>
+        <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="3.4. Summary Report will show the results" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>false</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="TestPlan.comments">http://jmeter.apache.org/usermanual/component_reference.html#Summary_Report</stringProp>
+        </ResultCollector>
+        <hashTree/>
       </hashTree>
-      <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report" enabled="true">
-        <boolProp name="ResultCollector.error_logging">false</boolProp>
-        <objProp>
-          <name>saveConfig</name>
-          <value class="SampleSaveConfiguration">
-            <time>true</time>
-            <latency>true</latency>
-            <timestamp>true</timestamp>
-            <success>true</success>
-            <label>true</label>
-            <code>true</code>
-            <message>true</message>
-            <threadName>true</threadName>
-            <dataType>true</dataType>
-            <encoding>false</encoding>
-            <assertions>true</assertions>
-            <subresults>true</subresults>
-            <responseData>false</responseData>
-            <samplerData>false</samplerData>
-            <xml>false</xml>
-            <fieldNames>false</fieldNames>
-            <responseHeaders>false</responseHeaders>
-            <requestHeaders>false</requestHeaders>
-            <responseDataOnError>false</responseDataOnError>
-            <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
-            <assertionsResultsToSave>0</assertionsResultsToSave>
-            <bytes>true</bytes>
-          </value>
-        </objProp>
-        <stringProp name="filename"></stringProp>
-      </ResultCollector>
-      <hashTree/>
     </hashTree>
   </hashTree>
 </jmeterTestPlan>
