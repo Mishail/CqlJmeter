@@ -7,7 +7,6 @@ import org.apache.jmeter.testbeans.TestBean;
 import org.apache.jmeter.testbeans.gui.TypeEditor;
 
 import com.datastax.driver.core.ConsistencyLevel;
-import com.github.cqljmeter.config.CassandraClusterConfigBeanInfo;
 
 public abstract class AbstractCqlSamplerBeanInfo extends BeanInfoSupport {
 
@@ -31,7 +30,14 @@ public abstract class AbstractCqlSamplerBeanInfo extends BeanInfoSupport {
 		p = property("consistency");
 		p.setValue(NOT_UNDEFINED, Boolean.TRUE);
 		p.setValue(DEFAULT, ConsistencyLevel.ONE.toString());
-		//p.setValue(TAGS, CassandraClusterConfigBeanInfo.toStrings(ConsistencyLevel.values()));
-		p.setValue(TAGS, new String[] {"1", "2"});
+		p.setValue(TAGS, toStrings(ConsistencyLevel.values()));
+	}
+	
+	public static String[] toStrings(ConsistencyLevel[] input) {
+		String[] result = new String[input.length];
+		for (int i=0; i < input.length; i++) {
+			result[i] = input[i].toString();
+		}
+		return result;
 	}
 }

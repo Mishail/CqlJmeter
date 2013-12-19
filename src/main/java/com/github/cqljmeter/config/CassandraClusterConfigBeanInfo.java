@@ -5,8 +5,6 @@ import java.beans.PropertyDescriptor;
 import org.apache.jmeter.testbeans.BeanInfoSupport;
 import org.apache.jmeter.testbeans.gui.TypeEditor;
 
-import com.datastax.driver.core.ConsistencyLevel;
-
 public class CassandraClusterConfigBeanInfo extends BeanInfoSupport {
 
 	public CassandraClusterConfigBeanInfo() {
@@ -32,12 +30,5 @@ public class CassandraClusterConfigBeanInfo extends BeanInfoSupport {
 		p.setValue(DEFAULT, "");
 	}
 
-	public static String[] toStrings(ConsistencyLevel[] input) {
-		String[] result = new String[input.length];
-		for (int i=0; i < input.length-1; i++) {
-			result[i] = input[i].toString();
-		}
-		return result;
-	}
 
 }

@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.cqljmeter</groupId>
 	<artifactId>CqlJmeter</artifactId>
@@ -8,12 +9,12 @@
 			<groupId>com.datastax.cassandra</groupId>
 			<artifactId>cassandra-driver-core</artifactId>
 			<version>1.0.5</version>
-			<!--<exclusions>
-				 <exclusion>
-					Provided by JMeter
+			<exclusions>
+				<exclusion>
+					<!-- Provided by JMeter -->
 					<groupId>org.slf4j</groupId>
 					<artifactId>slf4j-api</artifactId>
-					
+
 				</exclusion>
 				<exclusion>
 					<groupId>commons-codec</groupId>
@@ -28,16 +29,10 @@
 					<artifactId>httpclient</artifactId>
 				</exclusion>
 				<exclusion>
-				  <groupId>antlr</groupId>
-  <artifactId>antlr</artifactId>
-  <packaging>jar</packaging>
-  <version>2.7.7</version>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
 				</exclusion>
-				<exclusion>
-				  <groupId>org.slf4j</groupId>
-  <artifactId>slf4j-log4j12</artifactId>
-				</exclusion>
-			</exclusions> -->
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.jmeter</groupId>
@@ -132,13 +127,13 @@
 	<name>CqlJmeter</name>
 	<url>https://github.com/Mishail/CqlJmeter/</url>
 	<description>CQL Sampler for Jmeter</description>
-	
+
 
 	<scm>
 		<developerConnection>scm:git:file://.</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
-	
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
