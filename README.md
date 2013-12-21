@@ -1,7 +1,7 @@
 CqlJmeter
 =========
 
-CQL Sampler (Cassandra 2.x is required) for JMeter
+CQL Sampler (Cassandra 1.2.x or 2.x is required) for JMeter
 
 
 
@@ -9,7 +9,7 @@ Install
 --------
 
 * Get a release
-* Unpack into _/lib_ folder into the JMeter's folder
+* Unpack _/lib_ folder from the release into the JMeter's folder
 
 Components
 ----------
@@ -18,7 +18,7 @@ See [Components](https://github.com/Mishail/CqlJmeter/wiki)
 
 Quickstart
 ---------
-There is a sample test plan in _/samples_ folder. Read more at [Walk through the sample](https://github.com/Mishail/CqlJmeter/wiki/Walkthrough)
+There are sample test plans in _/samples_ folder. Read more at [Walk through the samples](https://github.com/Mishail/CqlJmeter/wiki/Walkthrough)
 
 Basically you need 4 components:
 
