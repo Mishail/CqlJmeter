@@ -9,7 +9,8 @@ Install
 --------
 
 * Get a release
-* Unpack _/lib_ folder from the release into the JMeter's folder
+* Unpack _/lib_ folder from the release into the JMeter's folder, for example
+```tar -xjf CqlJmeter-2.0.5-release.tar.gz -C apache-jmeter-2.11/```
 
 Components
 ----------
