@@ -112,7 +112,7 @@
 	
 
 	<scm>
-		<developerConnection>scm:git:file://.</developerConnection>
+		<developerConnection>scm:git:git@github.com:Mishail/CqlJmeter.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
 	
