@@ -5,6 +5,7 @@
 	<id>release</id>
 	<formats>
 		<format>tar.gz</format>
+		<format>zip</format>
 	</formats>
 	<includeBaseDirectory>false</includeBaseDirectory>
 	<fileSets>
@@ -21,17 +22,12 @@
 			<directory>${project.build.directory}</directory>
 			<outputDirectory>lib/ext</outputDirectory>
 			<includes>
-				<include>*.jar</include>
+				<include>${project.build.finalName}.jar</include>
 			</includes>
-		</fileSet>
-		<fileSet>
-			<directory>${project.build.directory}/lib</directory>
-			<outputDirectory>lib</outputDirectory>
 		</fileSet>
 		<fileSet>
 			<directory>${project.basedir}/src/main/resources/samples</directory>
 			<lineEnding>unix</lineEnding>
-			<fileMode>644</fileMode>
 			<outputDirectory>/samples</outputDirectory>
 		</fileSet>
 	</fileSets>
