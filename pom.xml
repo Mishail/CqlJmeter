@@ -58,18 +58,21 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
+				<artifactId>maven-shade-plugin</artifactId>
 				<version>2.3</version>
 				<configuration>
-					<descriptors>
-						<descriptor>./assembly.xml</descriptor>
-					</descriptors>
+					<transformers>
+						<transformer
+							implementation="org.apache.maven.plugins.shade.resource.DontIncludeResourceTransformer">
+							<resource>samples</resource>
+						</transformer>
+					</transformers>
 				</configuration>
 				<executions>
 					<execution>
 						<phase>package</phase>
 						<goals>
-							<goal>single</goal>
+							<goal>shade</goal>
 						</goals>
 					</execution>
 				</executions>
