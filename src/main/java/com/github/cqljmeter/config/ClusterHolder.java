@@ -26,10 +26,16 @@ package com.github.cqljmeter.config;
  * #L%
  */
 
+import static com.google.common.collect.Maps.newConcurrentMap;
+
+import java.util.concurrent.ConcurrentMap;
+
+import org.apache.commons.lang3.Validate;
 import org.apache.jorphan.logging.LoggingManager;
 import org.apache.log.Logger;
 
 import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.Cluster.Builder;
 import com.datastax.driver.core.Session;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -37,13 +43,16 @@ import com.google.common.cache.LoadingCache;
 
 public class ClusterHolder {
 	private static final Logger log = LoggingManager.getLoggerForClass();
+	
 	private final Cluster cluster;
+	
+	private final static ConcurrentMap<String, ClusterHolder> CLUSTERS = newConcurrentMap();
 	
 	private final LoadingCache<String, Session> sessions = 
 			CacheBuilder.newBuilder().build(new CacheLoader<String, Session>() {
 				@Override
 				public Session load(String key) throws Exception {
-					log.debug("New session for " + key);
+					log.info("New session for " + key + " in :" + Thread.currentThread());
 					return cluster.connect(key);
 				}}); 
 
@@ -57,5 +66,21 @@ public class ClusterHolder {
 
 	public Session getSesssion(String keyspace) {
 		return sessions.getUnchecked(keyspace);
+	}
+
+	public static void putBuilder(String clusterId, Builder builder) {
+		CLUSTERS.putIfAbsent(clusterId, new ClusterHolder(builder.build()));
+	}
+
+	public static Session getSesssion(String clusterId, String keyspace) {
+		ClusterHolder holder = CLUSTERS.get(clusterId);
+		Validate.notNull(holder, "Can't obtain a cluster config. Did you forget to add C* Cluster Configuration Element?");
+		return holder.getSesssion(keyspace);
+	}
+
+	public static void shutdownAll() {
+		for (ClusterHolder cluster: CLUSTERS.values()) {
+			cluster.shutdown();
+		}
 	}
 }

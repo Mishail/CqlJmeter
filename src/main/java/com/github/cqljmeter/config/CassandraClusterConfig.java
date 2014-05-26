@@ -51,7 +51,7 @@ public class CassandraClusterConfig extends ConfigTestElement  implements TestSt
 
 	@Override
 	public void testEnded() {
-		((ClusterHolder)getThreadContext().getVariables().getObject(getClusterId())).shutdown();
+		ClusterHolder.shutdownAll();
 	}
 
 	@Override
@@ -61,13 +61,12 @@ public class CassandraClusterConfig extends ConfigTestElement  implements TestSt
 
 	@Override
 	public void testStarted() {
-		log.debug("Creating cluster: " + clusterId);
 		Builder builder = Cluster.builder().withClusterName(clusterId).addContactPoint(contactPoint);
 		if (StringUtils.isNotBlank(user)) {
 			builder = builder.withCredentials(user, password);
 		}
 		builder = builder.withQueryOptions(new QueryOptions().setConsistencyLevel(ConsistencyLevel.valueOf(consistency)));
-		getThreadContext().getVariables().putObject(getClusterId(), new ClusterHolder(builder.build()));
+		ClusterHolder.putBuilder(getClusterId(), builder);
 	}
 
 	@Override

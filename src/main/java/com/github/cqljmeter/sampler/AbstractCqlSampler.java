@@ -27,7 +27,6 @@ package com.github.cqljmeter.sampler;
  */
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
 import org.apache.jmeter.samplers.AbstractSampler;
 import org.apache.jmeter.samplers.Entry;
 import org.apache.jmeter.samplers.SampleResult;
@@ -88,9 +87,7 @@ public abstract class AbstractCqlSampler extends AbstractSampler implements Test
 	protected abstract Statement getStatement();
 
 	private Session getSession(String input) {
-		ClusterHolder holder = (ClusterHolder) getThreadContext().getVariables().getObject(getClusterId());
-		Validate.notNull(holder, "Can't obtain a session. Did you forget to add C* Cluster Configuration Element?");
-		return holder.getSesssion(input);
+		return ClusterHolder.getSesssion(getClusterId(), input);
 	}
 
 	public String getQuery() {
