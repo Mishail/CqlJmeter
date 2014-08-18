@@ -82,5 +82,6 @@ public class ClusterHolder {
 		for (ClusterHolder cluster: CLUSTERS.values()) {
 			cluster.shutdown();
 		}
+		CLUSTERS.clear();
 	}
 }
