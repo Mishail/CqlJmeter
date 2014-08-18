@@ -9,8 +9,11 @@ Install
 --------
 
 * Get a release
-* Unpack _/lib_ folder from the release into the JMeter's folder, for example
+* From TGZ:
+ * Unpack _/lib_ folder from the release into the JMeter's folder, for example
 ```tar -xjf CqlJmeter-2.0.5-release.tar.gz -C apache-jmeter-2.11/```
+* Using all-in-one JAR:
+ * drop the JAR file into JMeter's ```lib/ext``` folder
 
 Components
 ----------
