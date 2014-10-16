@@ -39,6 +39,7 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
 import com.github.cqljmeter.config.ClusterHolder;
+import com.google.common.base.Joiner;
 
 public abstract class AbstractCqlSampler extends AbstractSampler implements TestBean {
 	private static final long serialVersionUID = -996507992186021290L;
@@ -65,7 +66,7 @@ public abstract class AbstractCqlSampler extends AbstractSampler implements Test
 		result.sampleStart();
 		try {
 			ResultSet data = getSession(keySpace).execute(statement);
-			result.setResponseData(data.toString().getBytes());
+			result.setResponseData(getStringFrom(data).getBytes());
 			result.setResponseMessage(data.toString());
 		} catch (Exception ex) {
 			log.error(String.format("Error executing CQL statement [%s]", getQuery()), ex);
@@ -120,5 +121,9 @@ public abstract class AbstractCqlSampler extends AbstractSampler implements Test
 
 	public void setConsistency(String consistency) {
 		this.consistency = consistency;
+	}
+	
+	private String getStringFrom(ResultSet input) {
+		return Joiner.on("\n").join(input);
 	}
 }
