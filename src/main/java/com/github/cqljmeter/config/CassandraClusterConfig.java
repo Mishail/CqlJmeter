@@ -26,6 +26,10 @@ package com.github.cqljmeter.config;
  * #L%
  */
 
+import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.Cluster.Builder;
+import com.datastax.driver.core.ConsistencyLevel;
+import com.datastax.driver.core.QueryOptions;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jmeter.config.ConfigTestElement;
 import org.apache.jmeter.testbeans.TestBean;
@@ -33,16 +37,11 @@ import org.apache.jmeter.testelement.TestStateListener;
 import org.apache.jorphan.logging.LoggingManager;
 import org.apache.log.Logger;
 
-import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.Cluster.Builder;
-import com.datastax.driver.core.ConsistencyLevel;
-import com.datastax.driver.core.QueryOptions;
-
 public class CassandraClusterConfig extends ConfigTestElement  implements TestStateListener, TestBean {
 
 	private static final Logger log = LoggingManager.getLoggerForClass();
 	private static final long serialVersionUID = -3927956370607660166L;
-	
+
 	private String clusterId = "";
 	private String contactPoint = "";
 	private String user = "";
@@ -59,15 +58,19 @@ public class CassandraClusterConfig extends ConfigTestElement  implements TestSt
 		testEnded();
 	}
 
-	@Override
-	public void testStarted() {
-		Builder builder = Cluster.builder().withClusterName(clusterId).addContactPoint(contactPoint);
-		if (StringUtils.isNotBlank(user)) {
-			builder = builder.withCredentials(user, password);
-		}
-		builder = builder.withQueryOptions(new QueryOptions().setConsistencyLevel(ConsistencyLevel.valueOf(consistency)));
-		ClusterHolder.putBuilder(getClusterId(), builder);
-	}
+    @Override
+    public void testStarted() {
+        String[] contactPoints = contactPoint.split(",");
+        Builder builder = Cluster.builder().withClusterName(clusterId);
+        for (String contactPoint : contactPoints) {
+            builder.addContactPoint(contactPoint);
+        }
+        if (StringUtils.isNotBlank(user)) {
+            builder = builder.withCredentials(user, password);
+        }
+        builder = builder.withQueryOptions(new QueryOptions().setConsistencyLevel(ConsistencyLevel.valueOf(consistency)));
+        ClusterHolder.putBuilder(getClusterId(), builder);
+    }
 
 	@Override
 	public void testStarted(String arg0) {
