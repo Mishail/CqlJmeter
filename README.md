@@ -8,10 +8,11 @@ CQL Sampler (Cassandra 1.2.x or 2.x is required) for JMeter
 Install
 --------
 
-* Get a release
+* If maven is not installed on your system see [Installing Apache Maven](http://maven.apache.org/install.html)
+* compile project: `mvn package`
 * From TGZ:
- * Unpack _/lib_ folder from the release into the JMeter's folder, for example
-```tar -xjf CqlJmeter-2.0.5-release.tar.gz -C apache-jmeter-2.11/```
+ * Unpack compiled plugin from _/target_ folder into the JMeter's _lib/ext_ folder, for example
+```tar -xjf CqlJmeter-2.1.0-SNAPSHOT.tar.gz -C apache-jmeter-2.11/lib/ext```
 * Using all-in-one JAR:
  * drop the JAR file into JMeter's ```lib/ext``` folder
 
